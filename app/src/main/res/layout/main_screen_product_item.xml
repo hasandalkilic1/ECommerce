@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvMainScreenProductItem"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+            
+            <ImageView
+                android:id="@+id/ivMainScreenProductItemImage"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="Main Screen Product Item Image"
+                android:src="@drawable/telefon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvMainScreenProductItemBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brand"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@+id/ivMainScreenProductItemImage"
+                app:layout_constraintStart_toStartOf="@+id/ivMainScreenProductItemImage"
+                app:layout_constraintEnd_toEndOf="@+id/ivMainScreenProductItemImage"/>
+
+            <TextView
+                android:id="@+id/tvMainScreenProductItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/secondary_text_color"
+                app:layout_constraintStart_toStartOf="@id/ivMainScreenProductItemImage"
+                app:layout_constraintTop_toBottomOf="@id/tvMainScreenProductItemBrand"
+                app:layout_constraintEnd_toEndOf="@id/ivMainScreenProductItemImage"/>
+
+            <TextView
+                android:id="@+id/tvMainScreenProductItemPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100TL"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/ivMainScreenProductItemAddToCart"
+                app:layout_constraintTop_toTopOf="@+id/ivMainScreenProductItemAddToCart"/>
+
+            <ImageView
+                android:id="@+id/ivMainScreenProductItemAddToCart"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_add"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/rounded_button_left_background"
+                app:layout_constraintTop_toBottomOf="@id/tvMainScreenProductItemName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

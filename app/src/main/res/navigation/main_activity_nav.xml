@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_nav"
+    app:startDestination="@id/mainScreen">
+
+    <fragment
+        android:id="@+id/mainScreen"
+        android:name="com.example.ecommerce.presentation.screen.MainScreen"
+        android:label="main_screen"
+        tools:layout="@layout/main_screen" >
+        <action
+            android:id="@+id/toShoppingCartScreen"
+            app:destination="@id/shoppingCartScreen" />
+        <action
+            android:id="@+id/toProductDetailScreen"
+            app:destination="@id/productDetailScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailScreen"
+        android:name="com.example.ecommerce.presentation.screen.ProductDetailScreen"
+        android:label="product_detail_screen"
+        tools:layout="@layout/product_detail_screen" >
+        <argument
+            android:name="Product"
+            app:argType="com.example.ecommerce.data.model.Product" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingCartScreen"
+        android:name="com.example.ecommerce.presentation.screen.ShoppingCartScreen"
+        android:label="shopping_cart_screen"
+        tools:layout="@layout/shopping_cart_screen" />
+</navigation>
