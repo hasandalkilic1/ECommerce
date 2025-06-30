@@ -8,6 +8,7 @@ import com.example.ecommerce.data.repository.ProductsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,6 +18,8 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
     val cartProducts = MutableLiveData<List<ShoppingCartProduct>>(emptyList())
     val totalPrice = MutableLiveData(0)
 
+    private var updateJob: Job? = null
+
     init {
         getCartProducts()
     }
@@ -25,6 +28,7 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
         viewModelScope.launch {
             try {
                 cartProducts.value = productRepository.getCartProducts() ?: emptyList()
+                sortProductsAlphabetically()
                 calculateTotalPrice()
             } catch (e: Exception) {
                 cartProducts.value = emptyList()
@@ -33,13 +37,35 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
         }
     }
 
-    fun updateProductQuantity(product: ShoppingCartProduct, newQuantity: Int) {
-        val updatedList = cartProducts.value?.map {
-            if (it.sepetId == product.sepetId) it.copy(siparisAdeti = newQuantity) else it
-        } ?: return
+    private fun sortProductsAlphabetically() {
+        cartProducts.value = cartProducts.value?.sortedBy { it.marka.lowercase() }
+    }
 
-        cartProducts.value = updatedList
-        calculateTotalPrice()
+    fun updateProductQuantity(product: ShoppingCartProduct, newQuantity: Int) {
+        if (updateJob?.isActive == true) return
+
+        updateJob = viewModelScope.launch {
+            try {
+                // 1. Önce ürünü sil
+                productRepository.deleteProductFromCart(product.sepetId, product.kullaniciAdi)
+
+                // 2. Yeni adetle tekrar ekle
+                val updatedProduct = product.copy(siparisAdeti = newQuantity)
+                productRepository.addProductToCart(
+                    updatedProduct
+                )
+
+                // 3. Güncel listeyi tekrar al
+                cartProducts.value = productRepository.getCartProducts() ?: emptyList()
+                sortProductsAlphabetically()
+                // 4. Toplam fiyatı yeniden hesapla
+                calculateTotalPrice()
+            } catch (e: Exception) {
+                // Hata durumunda listeyi sıfırlamak isteyebilirsin
+                cartProducts.value = emptyList()
+                totalPrice.value = 0
+            }
+        }
     }
 
     private fun calculateTotalPrice() {

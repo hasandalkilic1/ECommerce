@@ -51,35 +51,45 @@
                 android:layout_width="256dp"
                 android:layout_height="256dp"
                 android:src="@drawable/telefon"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvProductCategory" />
 
-            <TextView
-                android:id="@+id/tvProductBrand"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clProductBrandAndName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Product Brand"
-                android:textColor="@color/text_color"
-                android:textSize="20sp"
+                android:padding="8dp"
+                android:background="@drawable/rounded_button_left_background"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tvProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                <TextView
+                    android:id="@+id/tvProductBrand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Product Brand"
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                android:text="Product Name"
-                android:textColor="@color/secondary_text_color"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/tvProductBrand"
-                app:layout_constraintTop_toTopOf="@+id/tvProductBrand"
-                app:layout_constraintBottom_toBottomOf="@+id/tvProductBrand"/>
+                <TextView
+                    android:id="@+id/tvProductName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Product Name"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/tvProductBrand"
+                    app:layout_constraintTop_toTopOf="@+id/tvProductBrand"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvProductBrand"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/tvProductPrice"
@@ -99,12 +109,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="8dp"
-                android:background="@drawable/rounded_button_right_background"
+                android:background="@drawable/rounded_button_left_background"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
                 android:text="Product Category"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductBrand"/>
+                app:layout_constraintTop_toBottomOf="@+id/clProductBrandAndName"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clTotalIncreaseDecrease"

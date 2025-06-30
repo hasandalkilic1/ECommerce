@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ecommerce.R
-import com.example.ecommerce.data.model.Product
 import com.example.ecommerce.databinding.MainScreenBinding
 import com.example.ecommerce.presentation.adapter.MainScreenProductsAdapter
 import com.example.ecommerce.presentation.viewmodel.MainViewModel
@@ -28,16 +27,19 @@ class MainScreen : Fragment() {
         binding = MainScreenBinding.inflate(inflater, container, false)
 
         viewModel.products.observe(viewLifecycleOwner) {
-            binding.rvMainScreenProducts.adapter = MainScreenProductsAdapter(requireContext(), it, viewModel)
+            binding.rvMainScreenProducts.adapter =
+                MainScreenProductsAdapter(requireContext(), it, viewModel)
         }
         binding.rvMainScreenProducts.layoutManager = GridLayoutManager(requireContext(), 2)
 
         binding.svMainScreen.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                viewModel.search(query)
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
+                viewModel.search(newText)
                 return true
             }
         })
@@ -55,6 +57,6 @@ class MainScreen : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllProducts()
+        binding.svMainScreen.setQuery("", false)
     }
 }
