@@ -134,6 +134,7 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/rounded_button_left_background"
                     android:text="-"
+                    style="?android:attr/borderlessButtonStyle"
                     app:layout_constraintEnd_toStartOf="@+id/tvTotalUnit"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -158,6 +159,7 @@
                     android:layout_marginStart="16dp"
                     android:background="@drawable/rounded_button_right_background"
                     android:text="+"
+                    style="?android:attr/borderlessButtonStyle"
                     app:layout_constraintBottom_toBottomOf="@id/btDecrease"
                     app:layout_constraintStart_toEndOf="@+id/tvTotalUnit"
                     app:layout_constraintTop_toTopOf="@+id/btDecrease" />
@@ -196,6 +198,7 @@
             android:background="@drawable/button_add_to_cart_background"
             android:padding="8dp"
             android:text="Sepete Ekle"
+            style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/secondary_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
