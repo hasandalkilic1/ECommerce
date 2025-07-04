@@ -3,12 +3,12 @@ package com.example.ecommerce.data.model
 import com.google.gson.annotations.SerializedName
 
 data class ShoppingCartProduct(
-    @SerializedName("sepetId") val sepetId: Int,
-    @SerializedName("ad") val ad: String,
-    @SerializedName("resim") val resim: String,
-    @SerializedName("kategori") val kategori: String,
-    @SerializedName("fiyat") val fiyat: Int,
-    @SerializedName("marka") val marka: String,
-    @SerializedName("siparisAdeti") var siparisAdeti: Int,
-    @SerializedName("kullaniciAdi") val kullaniciAdi: String
+    @SerializedName("sepetId") val cartId: Int,
+    @SerializedName("ad") val name: String,
+    @SerializedName("resim") val image: String,
+    @SerializedName("kategori") val category: String,
+    @SerializedName("fiyat") val price: Int,
+    @SerializedName("marka") val brand: String,
+    @SerializedName("siparisAdeti") var orderQuantity: Int,
+    @SerializedName("kullaniciAdi") val userName: String
 )

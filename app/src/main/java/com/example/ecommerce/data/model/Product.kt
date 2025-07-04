@@ -5,9 +5,9 @@ import java.io.Serializable
 
 data class Product(
     @SerializedName("id") val id: Int,
-    @SerializedName("ad") val ad: String,
-    @SerializedName("resim") val resim: String,
-    @SerializedName("kategori") val kategori: String,
-    @SerializedName("fiyat") val fiyat: Int,
-    @SerializedName("marka") val marka: String
+    @SerializedName("ad") val name: String,
+    @SerializedName("resim") val image: String,
+    @SerializedName("kategori") val category: String,
+    @SerializedName("fiyat") val price: Int,
+    @SerializedName("marka") val brand: String
 ) : Serializable

@@ -15,25 +15,25 @@ interface ProductsRemoteDao {
     @FormUrlEncoded
     @POST("urunler/sepeteUrunEkle.php")
     suspend fun addProductToCart(
-        @Field("ad") ad: String,
-        @Field("resim") resim: String,
-        @Field("kategori") kategori: String,
-        @Field("fiyat") fiyat: Int,
-        @Field("marka") marka: String,
-        @Field("siparisAdeti") siparisAdeti: Int,
-        @Field("kullaniciAdi") kullaniciAdi: String
+        @Field("ad") name: String,
+        @Field("resim") image: String,
+        @Field("kategori") category: String,
+        @Field("fiyat") price: Int,
+        @Field("marka") brand: String,
+        @Field("siparisAdeti") orderQuantity: Int,
+        @Field("kullaniciAdi") userName: String
     ): CRUDResponse
 
     @FormUrlEncoded
     @POST("urunler/sepettekiUrunleriGetir.php")
     suspend fun getCartProducts(
-        @Field("kullaniciAdi") kullaniciAdi: String
+        @Field("kullaniciAdi") userName: String
     ): ShoppingCartProductResponse
 
     @FormUrlEncoded
     @POST("urunler/sepettenUrunSil.php")
     suspend fun deleteProductFromCart(
-        @Field("sepetId") sepetId: Int,
-        @Field("kullaniciAdi") kullaniciAdi: String
+        @Field("sepetId") cartId: Int,
+        @Field("kullaniciAdi") userName: String
     ): CRUDResponse
 }

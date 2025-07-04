@@ -10,6 +10,8 @@ import com.example.ecommerce.databinding.ShoppingCartItemBinding
 import com.example.ecommerce.presentation.viewmodel.ShoppingCartViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.serialization.StringFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 class ShoppingCartAdapter(
     private val context: Context,
@@ -38,32 +40,35 @@ class ShoppingCartAdapter(
     override fun onBindViewHolder(holder: ShoppingCartViewHolder, position: Int) {
         val product = products[position]
         val design = holder.binding
-        design.tvShoppingCartItemBrand.text = product.marka
-        design.tvShoppingCartItemName.text = product.ad
-        design.tvShoppingCartItemPrice.text = "${product.fiyat} TL"
-        design.tvShoppingCartItemCount.text = "${product.siparisAdeti}"
-        design.tvShoppingCartItemTotalPrice.text = "${product.fiyat * product.siparisAdeti} TL"
+
+        val formatter = NumberFormat.getInstance(Locale("tr", "TR"))
+
+        design.tvShoppingCartItemBrand.text = product.brand
+        design.tvShoppingCartItemName.text = product.name
+        design.tvShoppingCartItemPrice.text = "${formatter.format(product.price)} TL"
+        design.tvShoppingCartItemCount.text = "${product.orderQuantity}"
+        design.tvShoppingCartItemTotalPrice.text = "${formatter.format(product.price * product.orderQuantity)} TL"
 
         design.ivShoppingCartItemDelete.setOnClickListener {
-            Snackbar.make(it, "Do you want to delete ${product.ad} ?", Snackbar.LENGTH_SHORT)
+            Snackbar.make(it, "Do you want to delete ${product.name} ?", Snackbar.LENGTH_SHORT)
                 .setAction("Yes") {
-                    viewModel.deleteProductFromCart(product.sepetId, product.kullaniciAdi)
+                    viewModel.deleteProductFromCart(product.cartId, product.userName)
                 }.show()
         }
 
         design.btShoppingCartDecrease.setOnClickListener {
-            if (product.siparisAdeti > 1) {
-                val newQuantity = product.siparisAdeti - 1
+            if (product.orderQuantity > 1) {
+                val newQuantity = product.orderQuantity - 1
                 viewModel.updateProductQuantity(product, newQuantity)
             }
         }
 
         design.btShoppingCartIncrease.setOnClickListener {
-            val newQuantity = product.siparisAdeti + 1
+            val newQuantity = product.orderQuantity + 1
             viewModel.updateProductQuantity(product, newQuantity)
         }
 
-        Glide.with(context).load("http://kasimadalan.pe.hu/urunler/resimler/${product.resim}")
+        Glide.with(context).load("http://kasimadalan.pe.hu/urunler/resimler/${product.image}")
             .override(64, 64).into(design.ivShoppingCartItemImage)
     }
 

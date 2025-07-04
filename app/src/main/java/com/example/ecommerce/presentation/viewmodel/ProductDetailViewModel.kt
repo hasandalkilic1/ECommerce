@@ -29,14 +29,14 @@ class ProductDetailViewModel @Inject constructor(private val productRepository: 
                     emptyList<ShoppingCartProduct>()
                 }
 
-                val existingProduct = currentCart.find { it.ad == product.ad }
+                val existingProduct = currentCart.find { it.name == product.name }
 
                 if (existingProduct != null) {
-                    productRepository.deleteProductFromCart(existingProduct.sepetId, "Hasan")
+                    productRepository.deleteProductFromCart(existingProduct.cartId, "Hasan")
                 }
 
                 val updatedProduct = if (existingProduct != null) {
-                    existingProduct.copy(siparisAdeti = existingProduct.siparisAdeti + product.siparisAdeti)
+                    existingProduct.copy(orderQuantity = existingProduct.orderQuantity + product.orderQuantity)
                 } else {
                     product
                 }

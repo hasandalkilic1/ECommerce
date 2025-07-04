@@ -12,6 +12,8 @@ import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.databinding.ProductDetailScreenBinding
 import com.example.ecommerce.presentation.viewmodel.ProductDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.NumberFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class ProductDetailScreen : Fragment() {
@@ -27,29 +29,31 @@ class ProductDetailScreen : Fragment() {
         val bundle: ProductDetailScreenArgs by navArgs()
         val product = bundle.Product
 
-        Glide.with(requireContext())
-            .load("http://kasimadalan.pe.hu/urunler/resimler/${product.resim}")
-            .into(binding.ivProductImage)
-        binding.tvProductName.text = product.ad
-        binding.tvProductBrand.text = product.marka
-        binding.tvProductPrice.text = "${product.fiyat} TL"
-        binding.tvProductCategory.text = product.kategori
+        val formatter = NumberFormat.getInstance(Locale("tr", "TR"))
 
-        viewModel.calculateTotalPrice(product.fiyat, 1)
+        Glide.with(requireContext())
+            .load("http://kasimadalan.pe.hu/urunler/resimler/${product.image}")
+            .into(binding.ivProductImage)
+        binding.tvProductName.text = product.name
+        binding.tvProductBrand.text = product.brand
+        binding.tvProductPrice.text = "${formatter.format(product.price)} TL"
+        binding.tvProductCategory.text = product.category
+
+        viewModel.calculateTotalPrice(product.price, 1)
 
         viewModel.totalPrice.observe(viewLifecycleOwner) {
-            binding.tvTotalPrice.text = "Toplam: $it TL"
+            binding.tvTotalPrice.text = "Toplam: ${formatter.format(it)} TL"
         }
 
         binding.btAddToCart.setOnClickListener {
             viewModel.addProductToCart(
                 ShoppingCartProduct(
                     1,
-                    product.ad,
-                    product.resim,
-                    product.kategori,
-                    product.fiyat,
-                    product.marka,
+                    product.name,
+                    product.image,
+                    product.category,
+                    product.price,
+                    product.brand,
                     binding.tvTotalUnit.text.toString().toInt(),
                     "Hasan"
                 )
@@ -60,7 +64,7 @@ class ProductDetailScreen : Fragment() {
             val currentUnit = binding.tvTotalUnit.text.toString().toInt()
             binding.tvTotalUnit.text = (currentUnit + 1).toString()
             viewModel.calculateTotalPrice(
-                product.fiyat,
+                product.price,
                 binding.tvTotalUnit.text.toString().toInt()
             )
         }
@@ -71,7 +75,7 @@ class ProductDetailScreen : Fragment() {
                 binding.tvTotalUnit.text = (currentUnit - 1).toString()
             }
             viewModel.calculateTotalPrice(
-                product.fiyat,
+                product.price,
                 binding.tvTotalUnit.text.toString().toInt()
             )
         }

@@ -46,16 +46,29 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/ivProductImage"
-                android:layout_width="256dp"
-                android:layout_height="256dp"
-                android:src="@drawable/telefon"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clProductImage"
+                android:layout_width="336dp"
+                android:layout_height="280dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:background="@drawable/image_border_background"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductCategory" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProductCategory">
+
+                <ImageView
+                    android:id="@+id/ivProductImage"
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:src="@drawable/ic_product_image_holder"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clProductBrandAndName"
@@ -90,18 +103,17 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <TextView
                 android:id="@+id/tvProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="36dp"
                 android:text="Fiyat: 100$"
                 android:textSize="28sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivProductImage" />
+                app:layout_constraintTop_toBottomOf="@id/clProductImage" />
 
             <TextView
                 android:id="@+id/tvProductCategory"

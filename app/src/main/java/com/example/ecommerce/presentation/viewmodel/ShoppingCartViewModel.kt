@@ -38,7 +38,7 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
     }
 
     private fun sortProductsAlphabetically() {
-        cartProducts.value = cartProducts.value?.sortedBy { it.marka.lowercase() }
+        cartProducts.value = cartProducts.value?.sortedBy { it.brand.lowercase() }
     }
 
     fun updateProductQuantity(product: ShoppingCartProduct, newQuantity: Int) {
@@ -46,22 +46,17 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
 
         updateJob = viewModelScope.launch {
             try {
-                // 1. Önce ürünü sil
-                productRepository.deleteProductFromCart(product.sepetId, product.kullaniciAdi)
+                productRepository.deleteProductFromCart(product.cartId, product.userName)
 
-                // 2. Yeni adetle tekrar ekle
-                val updatedProduct = product.copy(siparisAdeti = newQuantity)
+                val updatedProduct = product.copy(orderQuantity = newQuantity)
                 productRepository.addProductToCart(
                     updatedProduct
                 )
 
-                // 3. Güncel listeyi tekrar al
                 cartProducts.value = productRepository.getCartProducts() ?: emptyList()
                 sortProductsAlphabetically()
-                // 4. Toplam fiyatı yeniden hesapla
                 calculateTotalPrice()
             } catch (e: Exception) {
-                // Hata durumunda listeyi sıfırlamak isteyebilirsin
                 cartProducts.value = emptyList()
                 totalPrice.value = 0
             }
@@ -69,12 +64,12 @@ class ShoppingCartViewModel @Inject constructor(private val productRepository: P
     }
 
     private fun calculateTotalPrice() {
-        totalPrice.value = cartProducts.value?.sumOf { it.fiyat * it.siparisAdeti }
+        totalPrice.value = cartProducts.value?.sumOf { it.price * it.orderQuantity }
     }
 
-    fun deleteProductFromCart(sepetId: Int, kullaniciAdi: String) {
+    fun deleteProductFromCart(cartId: Int, userName: String) {
         CoroutineScope(Dispatchers.Main).launch {
-            productRepository.deleteProductFromCart(sepetId, kullaniciAdi)
+            productRepository.deleteProductFromCart(cartId, userName)
             getCartProducts()
         }
     }

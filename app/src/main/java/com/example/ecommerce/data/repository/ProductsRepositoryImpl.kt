@@ -20,21 +20,30 @@ class ProductsRepositoryImpl(private val productsRemoteDao: ProductsRemoteDao) :
 
     override suspend fun addProductToCart(product: ShoppingCartProduct): CRUDResponse {
         return productsRemoteDao.addProductToCart(
-            product.ad,
-            product.resim,
-            product.kategori,
-            product.fiyat,
-            product.marka,
-            product.siparisAdeti,
-            product.kullaniciAdi
+            product.name,
+            product.image,
+            product.category,
+            product.price,
+            product.brand,
+            product.orderQuantity,
+            product.userName
         )
     }
 
-    override suspend fun deleteProductFromCart(sepetId: Int, kullaniciAdi: String) {
-        productsRemoteDao.deleteProductFromCart(sepetId, kullaniciAdi)
+    override suspend fun deleteProductFromCart(cartId: Int, userName: String) {
+        productsRemoteDao.deleteProductFromCart(cartId, userName)
     }
 
-    override suspend fun searchProducts(query: String): List<Product> {
-        TODO("Not yet implemented")
+    override suspend fun searchProducts(query: String, allProducts: List<Product>): List<Product> {
+        return withContext(Dispatchers.IO) {
+            if (query.isEmpty()) {
+                productsRemoteDao.getAllProducts().products
+            } else {
+                allProducts.filter {
+                    it.name.contains(query, ignoreCase = true) ||
+                            it.brand.contains(query, ignoreCase = true)
+                }
+            }
+        }
     }
 }

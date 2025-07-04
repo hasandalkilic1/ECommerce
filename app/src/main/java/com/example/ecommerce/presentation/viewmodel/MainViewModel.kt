@@ -3,6 +3,7 @@ package com.example.ecommerce.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.data.model.Product
 import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.data.repository.ProductsRepositoryImpl
@@ -40,23 +41,23 @@ class MainViewModel @Inject constructor(private val productRepository: ProductsR
                     emptyList<ShoppingCartProduct>()
                 }
 
-                val existingProduct = currentCart.find { it.ad == product.ad }
+                val existingProduct = currentCart.find { it.name == product.name }
 
                 if (existingProduct != null) {
-                    productRepository.deleteProductFromCart(existingProduct.sepetId, "Hasan")
+                    productRepository.deleteProductFromCart(existingProduct.cartId, "Hasan")
                 }
 
                 val productShoppingCart =
-                    existingProduct?.copy(siparisAdeti = existingProduct.siparisAdeti + 1)
+                    existingProduct?.copy(orderQuantity = existingProduct.orderQuantity + 1)
                         ?: ShoppingCartProduct(
-                            sepetId = 1,
-                            ad = product.ad,
-                            resim = product.resim,
-                            kategori = product.kategori,
-                            fiyat = product.fiyat,
-                            marka = product.marka,
-                            siparisAdeti = 1,
-                            kullaniciAdi = "Hasan"
+                            cartId = 1,
+                            name = product.name,
+                            image = product.image,
+                            category = product.category,
+                            price = product.price,
+                            brand = product.brand,
+                            orderQuantity = 1,
+                            userName = "Hasan"
                         )
 
                 val response = productRepository.addProductToCart(productShoppingCart)
@@ -71,16 +72,10 @@ class MainViewModel @Inject constructor(private val productRepository: ProductsR
     }
 
     fun search(query: String) {
-        val filteredList = products.value?.filter {
-            it.ad.contains(query, ignoreCase = true)
-        }
-        CoroutineScope(Dispatchers.Main).launch {
-            if (query.isEmpty() || filteredList == null) {
-                products.value = productRepository.getProducts()
-            } else {
-                products.value = filteredList ?: emptyList()
-            }
-
+        viewModelScope.launch {
+            val allProducts = products.value ?: emptyList()
+            val result = productRepository.searchProducts(query, allProducts)
+            products.value = result
         }
     }
 }

@@ -10,6 +10,8 @@ import com.example.ecommerce.data.model.Product
 import com.example.ecommerce.databinding.MainScreenProductItemBinding
 import com.example.ecommerce.presentation.screen.MainScreenDirections
 import com.example.ecommerce.presentation.viewmodel.MainViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 class MainScreenProductsAdapter(
     private val context: Context,
@@ -38,9 +40,11 @@ class MainScreenProductsAdapter(
         val product = productList[position]
         val design = holder.binding
 
-        design.tvMainScreenProductItemBrand.text = product.marka
-        design.tvMainScreenProductItemName.text = product.ad
-        design.tvMainScreenProductItemPrice.text = "${product.fiyat} TL"
+        val formatter = NumberFormat.getInstance(Locale("tr", "TR"))
+
+        design.tvMainScreenProductItemBrand.text = product.brand
+        design.tvMainScreenProductItemName.text = product.name
+        design.tvMainScreenProductItemPrice.text = "${formatter.format(product.price)} TL"
 
         design.cvMainScreenProductItem.setOnClickListener {
             it.findNavController().navigate(MainScreenDirections.toProductDetailScreen(product))
@@ -50,7 +54,7 @@ class MainScreenProductsAdapter(
             viewModel.addProductToCart(product)
         }
 
-        Glide.with(context).load("http://kasimadalan.pe.hu/urunler/resimler/${product.resim}")
+        Glide.with(context).load("http://kasimadalan.pe.hu/urunler/resimler/${product.image}")
             .override(128, 128).into(design.ivMainScreenProductItemImage)
 
     }
