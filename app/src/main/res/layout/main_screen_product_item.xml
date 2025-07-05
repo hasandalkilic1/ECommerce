@@ -22,6 +22,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tvMainScreenProductItemCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:paddingHorizontal="8dp"
+                android:text="Category"
+                android:textColor="@color/text_color"
+                android:background="@drawable/rounded_button_right_background"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
             
             <ImageView
                 android:id="@+id/ivMainScreenProductItemImage"
@@ -29,10 +42,10 @@
                 android:layout_height="128dp"
                 android:layout_marginTop="8dp"
                 android:contentDescription="Main Screen Product Item Image"
-                android:src="@drawable/telefon"
+                android:src="@drawable/ic_product_image_holder"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/tvMainScreenProductItemCategory"/>
 
             <TextView
                 android:id="@+id/tvMainScreenProductItemBrand"

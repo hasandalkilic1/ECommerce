@@ -44,6 +44,7 @@ class MainScreenProductsAdapter(
 
         design.tvMainScreenProductItemBrand.text = product.brand
         design.tvMainScreenProductItemName.text = product.name
+        design.tvMainScreenProductItemCategory.text = product.category
         design.tvMainScreenProductItemPrice.text = "${formatter.format(product.price)} TL"
 
         design.cvMainScreenProductItem.setOnClickListener {

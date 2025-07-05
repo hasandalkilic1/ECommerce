@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.databinding.ProductDetailScreenBinding
 import com.example.ecommerce.presentation.viewmodel.ProductDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -23,7 +27,7 @@ class ProductDetailScreen : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = ProductDetailScreenBinding.inflate(inflater, container, false)
 
         val bundle: ProductDetailScreenArgs by navArgs()
@@ -34,6 +38,7 @@ class ProductDetailScreen : Fragment() {
         Glide.with(requireContext())
             .load("http://kasimadalan.pe.hu/urunler/resimler/${product.image}")
             .into(binding.ivProductImage)
+
         binding.tvProductName.text = product.name
         binding.tvProductBrand.text = product.brand
         binding.tvProductPrice.text = "${formatter.format(product.price)} TL"
@@ -41,9 +46,8 @@ class ProductDetailScreen : Fragment() {
 
         viewModel.calculateTotalPrice(product.price, 1)
 
-        viewModel.totalPrice.observe(viewLifecycleOwner) {
-            binding.tvTotalPrice.text = "Toplam: ${formatter.format(it)} TL"
-        }
+
+        collectTotalPrice(formatter)
 
         binding.btAddToCart.setOnClickListener {
             viewModel.addProductToCart(
@@ -85,6 +89,16 @@ class ProductDetailScreen : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun collectTotalPrice(formatter: NumberFormat) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.totalPrice.collect { total ->
+                    binding.tvTotalPrice.text = "Toplam: ${formatter.format(total)} TL"
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

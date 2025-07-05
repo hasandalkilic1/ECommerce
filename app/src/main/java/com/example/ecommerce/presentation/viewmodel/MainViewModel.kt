@@ -1,23 +1,25 @@
 package com.example.ecommerce.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.data.model.Product
 import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.data.repository.ProductsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val productRepository: ProductsRepositoryImpl) :
     ViewModel() {
-    var products = MutableLiveData<List<Product>>()
+
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products: StateFlow<List<Product>> get() = _products
+
     private var addJob: Job? = null
 
     init {
@@ -25,15 +27,15 @@ class MainViewModel @Inject constructor(private val productRepository: ProductsR
     }
 
     fun getAllProducts() {
-        CoroutineScope(Dispatchers.Main).launch {
-            products.value = productRepository.getProducts()
+        viewModelScope.launch {
+            _products.value = productRepository.getProducts()
         }
     }
 
     fun addProductToCart(product: Product) {
         if (addJob?.isActive == true) return
 
-        addJob = CoroutineScope(Dispatchers.Main).launch {
+        addJob = viewModelScope.launch {
             try {
                 val currentCart = try {
                     productRepository.getCartProducts()
@@ -73,9 +75,9 @@ class MainViewModel @Inject constructor(private val productRepository: ProductsR
 
     fun search(query: String) {
         viewModelScope.launch {
-            val allProducts = products.value ?: emptyList()
+            val allProducts = _products.value
             val result = productRepository.searchProducts(query, allProducts)
-            products.value = result
+            _products.value = result
         }
     }
 }

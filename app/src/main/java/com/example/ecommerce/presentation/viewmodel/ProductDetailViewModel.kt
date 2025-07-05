@@ -1,32 +1,36 @@
 package com.example.ecommerce.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.data.repository.ProductsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductDetailViewModel @Inject constructor(private val productRepository: ProductsRepositoryImpl) :
-    ViewModel() {
-    val totalPrice = MutableLiveData(0)
+class ProductDetailViewModel @Inject constructor(
+    private val productRepository: ProductsRepositoryImpl
+) : ViewModel() {
+
+    private val _totalPrice = MutableStateFlow(0)
+    val totalPrice: StateFlow<Int> get() = _totalPrice
+
     private var addJob: Job? = null
 
     fun addProductToCart(product: ShoppingCartProduct) {
         if (addJob?.isActive == true) return
 
-        addJob = CoroutineScope(Dispatchers.Main).launch {
+        addJob = viewModelScope.launch {
             try {
                 val currentCart = try {
                     productRepository.getCartProducts()
                 } catch (e: Exception) {
-                    emptyList<ShoppingCartProduct>()
+                    emptyList()
                 }
 
                 val existingProduct = currentCart.find { it.name == product.name }
@@ -35,11 +39,9 @@ class ProductDetailViewModel @Inject constructor(private val productRepository: 
                     productRepository.deleteProductFromCart(existingProduct.cartId, "Hasan")
                 }
 
-                val updatedProduct = if (existingProduct != null) {
-                    existingProduct.copy(orderQuantity = existingProduct.orderQuantity + product.orderQuantity)
-                } else {
-                    product
-                }
+                val updatedProduct = existingProduct?.copy(
+                    orderQuantity = existingProduct.orderQuantity + product.orderQuantity
+                ) ?: product
 
                 productRepository.addProductToCart(updatedProduct)
             } catch (e: Exception) {
@@ -49,6 +51,6 @@ class ProductDetailViewModel @Inject constructor(private val productRepository: 
     }
 
     fun calculateTotalPrice(price: Int, quantity: Int) {
-        totalPrice.value = price * quantity
+        _totalPrice.value = price * quantity
     }
 }

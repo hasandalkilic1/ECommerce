@@ -1,13 +1,15 @@
 package com.example.ecommerce.presentation.screen
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ecommerce.R
@@ -15,6 +17,7 @@ import com.example.ecommerce.databinding.MainScreenBinding
 import com.example.ecommerce.presentation.adapter.MainScreenProductsAdapter
 import com.example.ecommerce.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainScreen : Fragment() {
@@ -24,13 +27,9 @@ class MainScreen : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = MainScreenBinding.inflate(inflater, container, false)
 
-        viewModel.products.observe(viewLifecycleOwner) {
-            binding.rvMainScreenProducts.adapter =
-                MainScreenProductsAdapter(requireContext(), it, viewModel)
-        }
         binding.rvMainScreenProducts.layoutManager = GridLayoutManager(requireContext(), 2)
 
         binding.svMainScreen.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -44,10 +43,25 @@ class MainScreen : Fragment() {
                 return true
             }
         })
+
         binding.floatingActionButton.setOnClickListener {
             it.findNavController().navigate(R.id.toShoppingCartScreen)
         }
+
+        collectProducts()
+
         return binding.root
+    }
+
+    private fun collectProducts() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.products.collect { productList ->
+                    binding.rvMainScreenProducts.adapter =
+                        MainScreenProductsAdapter(requireContext(), productList, viewModel)
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

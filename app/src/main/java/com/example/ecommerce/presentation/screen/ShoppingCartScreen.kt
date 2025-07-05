@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ecommerce.databinding.ShoppingCartScreenBinding
 import com.example.ecommerce.presentation.adapter.ShoppingCartAdapter
 import com.example.ecommerce.presentation.viewmodel.ShoppingCartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -23,14 +27,11 @@ class ShoppingCartScreen : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = ShoppingCartScreenBinding.inflate(inflater, container, false)
 
         val formatter = NumberFormat.getInstance(Locale("tr", "TR"))
 
-        viewModel.cartProducts.observe(viewLifecycleOwner) {
-            adapter.updateProducts(it)
-        }
         adapter = ShoppingCartAdapter(requireContext(), mutableListOf(), viewModel)
         binding.rvCartProducts.adapter = adapter
         binding.rvCartProducts.layoutManager = LinearLayoutManager(requireContext())
@@ -39,11 +40,30 @@ class ShoppingCartScreen : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        viewModel.totalPrice.observe(viewLifecycleOwner) {
-            binding.tvCardTotalPrice.text = "Toplam: ${formatter.format(it)} TL"
-        }
+        collectCartProducts()
+        collectTotalPrice(formatter)
 
         return binding.root
+    }
+
+    private fun collectCartProducts() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.cartProducts.collect { products ->
+                    adapter.updateProducts(products)
+                }
+            }
+        }
+    }
+
+    private fun collectTotalPrice(formatter: NumberFormat) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.totalPrice.collect {
+                    binding.tvCardTotalPrice.text = "Toplam: ${formatter.format(it)} TL"
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -9,7 +9,6 @@ import com.example.ecommerce.data.model.ShoppingCartProduct
 import com.example.ecommerce.databinding.ShoppingCartItemBinding
 import com.example.ecommerce.presentation.viewmodel.ShoppingCartViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.serialization.StringFormat
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -47,7 +46,8 @@ class ShoppingCartAdapter(
         design.tvShoppingCartItemName.text = product.name
         design.tvShoppingCartItemPrice.text = "${formatter.format(product.price)} TL"
         design.tvShoppingCartItemCount.text = "${product.orderQuantity}"
-        design.tvShoppingCartItemTotalPrice.text = "${formatter.format(product.price * product.orderQuantity)} TL"
+        design.tvShoppingCartItemTotalPrice.text =
+            "${formatter.format(product.price * product.orderQuantity)} TL"
 
         design.ivShoppingCartItemDelete.setOnClickListener {
             Snackbar.make(it, "Do you want to delete ${product.name} ?", Snackbar.LENGTH_SHORT)
@@ -73,8 +73,12 @@ class ShoppingCartAdapter(
     }
 
     fun updateProducts(newList: List<ShoppingCartProduct>) {
-        (products as MutableList).clear()
-        products.addAll(newList)
-        notifyDataSetChanged()
+        if (products is MutableList) {
+            (products as MutableList).apply {
+                clear()
+                addAll(newList)
+            }
+            notifyDataSetChanged()
+        }
     }
 }
